@@ -89,9 +89,9 @@ export default function LeagueDashboard({ league, user, onBack, onUpdate }) {
         </div>
       )}
 
-      {view === 'squads' && (
-        <SquadView league={league} user={user} isAdmin={isAdmin} onRefresh={onUpdate} />
-      )}
+{view === 'squads' && (
+  <SquadView league={league} user={user} isAdmin={member?.is_admin === true} onRefresh={onUpdate} />
+)}
 
       {view === 'members' && (
         <div style={{background:'#1a2535',border:'1px solid #2a3a50',borderRadius:12,padding:'1.5rem'}}>
