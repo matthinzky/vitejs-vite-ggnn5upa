@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { supabase } from '../supabase'
 import SquadView from './SquadView'
+import InvestmentWindow from './InvestmentWindow'
 
 export default function LeagueDashboard({ league, user, onBack, onUpdate }) {
   const member = league.members?.find(m => m.user_id === user.id)
-  const isAdmin = member?.is_admin
+  const isAdmin = member?.is_admin === true
   const [view, setView] = useState('home')
   const [teamName, setTeamName] = useState(member?.team_name || '')
   const [copied, setCopied] = useState(false)
@@ -44,6 +45,7 @@ export default function LeagueDashboard({ league, user, onBack, onUpdate }) {
   const tabs = [
     {id:'home', label:'Home', icon:'🏠'},
     {id:'squads', label:'Rose', icon:'👥'},
+    {id:'investments', label:'Investimenti', icon:'💰'},
     {id:'members', label:'Partecipanti', icon:'🏆'},
     {id:'team', label:'La mia squadra', icon:'⚽'},
     ...(isAdmin ? [{id:'admin', label:'Admin', icon:'⚙️'}] : [])
@@ -89,9 +91,13 @@ export default function LeagueDashboard({ league, user, onBack, onUpdate }) {
         </div>
       )}
 
-{view === 'squads' && (
-  <SquadView league={league} user={user} isAdmin={member?.is_admin === true} onRefresh={onUpdate} />
-)}
+      {view === 'squads' && (
+        <SquadView league={league} user={user} isAdmin={isAdmin} onRefresh={onUpdate} />
+      )}
+
+      {view === 'investments' && (
+        <InvestmentWindow league={league} user={user} isAdmin={isAdmin} />
+      )}
 
       {view === 'members' && (
         <div style={{background:'#1a2535',border:'1px solid #2a3a50',borderRadius:12,padding:'1.5rem'}}>
