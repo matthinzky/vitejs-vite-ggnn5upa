@@ -30,6 +30,12 @@ export default function InvestmentWindow({ league, user, isAdmin }) {
       .order('created_at', { ascending: false })
     setWindows(wins || [])
     const active = (wins || []).find(w => w.is_open)
+    if (active && new Date() > new Date(active.deadline)) {
+      await supabase.from('investment_windows').update({ is_open: false }).eq('id', active.id)
+      setActiveWindow(null)
+      setLoading(false)
+      return
+    }
     setActiveWindow(active || null)
 
     if (active) {
@@ -70,6 +76,12 @@ export default function InvestmentWindow({ league, user, isAdmin }) {
   }
 
   const makeInvestment = async (sp) => {
+    if (new Date() > new Date(activeWindow.deadline)) {
+      await supabase.from('investment_windows').update({ is_open: false }).eq('id', activeWindow.id)
+      setError('La finestra investimenti è scaduta')
+      fetchAll()
+      return
+    }
     if (myInvested.length >= activeWindow.max_investments_per_team)
       return setError(`Hai già raggiunto il massimo di ${activeWindow.max_investments_per_team} investimenti`)
     const cost = calcInvestmentCost(sp.last_paid)
@@ -99,6 +111,12 @@ export default function InvestmentWindow({ league, user, isAdmin }) {
   }
 
   const cancelInvestment = async (sp) => {
+    if (new Date() > new Date(activeWindow.deadline)) {
+      await supabase.from('investment_windows').update({ is_open: false }).eq('id', activeWindow.id)
+      setError('La finestra investimenti è scaduta')
+      fetchAll()
+      return
+    }
     const cost = sp.investment_cost || calcInvestmentCost(sp.last_paid)
     const member = league.members.find(m => m.user_id === user.id)
 
