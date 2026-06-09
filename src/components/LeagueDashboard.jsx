@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { supabase } from '../supabase'
 import SquadView from './SquadView'
 import InvestmentWindow from './InvestmentWindow'
+import Listone from './Listone'
 
 export default function LeagueDashboard({ league, user, onBack, onUpdate }) {
   const member = league.members?.find(m => m.user_id === user.id)
@@ -46,6 +47,7 @@ export default function LeagueDashboard({ league, user, onBack, onUpdate }) {
     {id:'home', label:'Home', icon:'🏠'},
     {id:'squads', label:'Rose', icon:'👥'},
     {id:'investments', label:'Investimenti', icon:'💰'},
+    {id:'listone', label:'Listone', icon:'📋'},
     {id:'members', label:'Partecipanti', icon:'🏆'},
     {id:'team', label:'La mia squadra', icon:'⚽'},
     ...(isAdmin ? [{id:'admin', label:'Admin', icon:'⚙️'}] : [])
@@ -97,6 +99,10 @@ export default function LeagueDashboard({ league, user, onBack, onUpdate }) {
 
       {view === 'investments' && (
         <InvestmentWindow league={league} user={user} isAdmin={isAdmin} />
+      )}
+
+      {view === 'listone' && (
+        <Listone league={league} user={user} isAdmin={isAdmin} />
       )}
 
       {view === 'members' && (
